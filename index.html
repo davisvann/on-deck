@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <title>On Deck</title>
+    <style>
+      :root {
+        --bg: #05070c; --ink: #eef3ff; --muted: #93a0b8; --line: rgba(140, 170, 255, .16);
+        --blue: #3d8bff; --blue2: #7fb2ff; --glass: rgba(24, 34, 58, .55); --lens-green: #5dff7a; --danger: #ff6b6b;
+      }
+      * { box-sizing: border-box }
+      html, body {
+        margin: 0; min-height: 100%; background: var(--bg);
+        color: var(--ink); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+        touch-action: manipulation; -webkit-text-size-adjust: 100%; overscroll-behavior: none;
+      }
+      body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        background: radial-gradient(120% 70% at 50% -10%, #12234a 0%, var(--bg) 60%) }
+      #app { max-width: 620px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom)) }
+      .hidden { display: none !important }
+      h1, h2 { margin: 0; letter-spacing: -.01em }
+      h1 { font-size: 22px } h2 { font-size: 16px }
+      p { margin: 6px 0 }
+      .muted { color: var(--muted) } .small { font-size: 13px }
+      .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 2px 14px }
+      .brand { display: flex; align-items: center; gap: 12px }
+      .brand p { margin: 0; color: var(--muted); font-size: 13px }
+      .mark { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(160deg, var(--blue2), var(--blue) 55%, #1747a8);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 6px 18px rgba(61,139,255,.35); position: relative }
+      .mark::after { content: ""; position: absolute; left: 8px; right: 8px; top: 16px; height: 6px; border-radius: 3px; background: rgba(5,7,12,.85) }
+      .chip { font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap }
+      .chip.on { color: #c9ffd3; border-color: rgba(93,255,122,.4); background: rgba(93,255,122,.08) }
+      .card { border-radius: 22px; padding: 14px; margin: 0 0 12px }
+      .glass { background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 10px 30px rgba(0,0,0,.35) }
+      .card-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px }
+      .card-h .muted { font-size: 13px; text-align: right }
+      .lens-wrap { width: 100%; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(93,255,122,.18); position: relative }
+      .lens { position: absolute; left: 10px; top: 10px; width: 576px; height: 288px; transform-origin: 0 0;
+        font: 18px/27px -apple-system, "SF Pro Text", system-ui, sans-serif; letter-spacing: -.01em; color: var(--lens-green) }
+      .lt, .ll { position: absolute; white-space: pre; overflow: hidden }
+      .lt.c0 { opacity: .25 } .lt.c1 { opacity: .4 } .lt.c2 { opacity: .6 } .lt.c3 { opacity: .8 } .lt.c4 { opacity: 1 }
+      .ll { overflow-y: auto; scrollbar-width: none }
+      .li { padding: 0 8px; font-size: 18px; border: 2px solid transparent; border-radius: 6px; height: 36px; line-height: 30px; overflow: hidden; text-overflow: ellipsis }
+      .li.sel { border-color: rgba(93,255,122,.85) }
+      .pad { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-top: 10px }
+      .pad button { font-size: 14px; padding: 10px 4px; white-space: nowrap }
+      @media (max-width: 430px) { .pad { grid-template-columns: repeat(6, minmax(0, 1fr)) } .pad button { grid-column: span 2 } .pad button[data-in=double], .pad button[data-in=menu] { grid-column: span 3 } }
+      .pad button, .btn, .weeks button, .menu button {
+        font: inherit; font-weight: 600; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 14px; padding: 10px 8px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.08); cursor: pointer; text-decoration: none; text-align: center }
+      .pad button.primary, .btn { background: linear-gradient(180deg, rgba(127,178,255,.95), rgba(61,139,255,.95)); color: #04122e; border-color: transparent }
+      .btn.ghost { background: rgba(255,255,255,.06); color: var(--ink); border-color: var(--line) }
+      .btn.danger { background: transparent; color: var(--danger); border-color: rgba(255,107,107,.35) }
+      button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--blue2); outline-offset: 2px }
+      .hint { color: var(--muted); font-size: 12px; margin: 8px 2px 0 }
+      .weeks { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin: 10px 0 6px }
+      .weeks button { padding: 10px 0; font-size: 16px }
+      .weeks button.on { background: linear-gradient(180deg, var(--blue2), var(--blue)); color: #04122e; border-color: transparent }
+      .weeks button:disabled { opacity: .45; cursor: default }
+      .phase { font-size: 14px }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px }
+      .row .btn { flex: 1 1 auto; min-width: 120px }
+      textarea { width: 100%; min-height: 180px; margin-top: 10px; border-radius: 14px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink);
+        font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 10px; resize: vertical }
+      .msg { min-height: 1.2em; font-size: 13px; color: var(--blue2) }
+      .foot { color: var(--muted); font-size: 12px; text-align: center; margin: 14px 8px }
+      .menu { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; padding: 14px; z-index: 5 }
+      .menu-in { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 22px; background: #0d1426; border: 1px solid var(--line) }
+      .menu button.ghost { background: transparent }
+      .wide { width: 100%; margin-top: 10px }
+      .queue { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px }
+      .q { border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px; background: rgba(255,255,255,.03) }
+      .q.now { border-color: rgba(127,178,255,.7); box-shadow: 0 0 0 1px rgba(127,178,255,.35) inset }
+      .q.sent, .q.skipped { opacity: .5 }
+      .q-h { display: flex; align-items: baseline; gap: 8px }
+      .q-h b { flex: 1; min-width: 0 }
+      .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--blue2) }
+      .st { font-size: 12px; color: var(--muted); white-space: nowrap }
+      .draft { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background: rgba(0,0,0,.3); font-size: 14px }
+      .field { display: block; font-size: 13px; color: var(--muted); margin-top: 10px }
+      .field input, .field select { display: block; width: 100%; margin-top: 4px; font: 15px -apple-system, system-ui, sans-serif; color: var(--ink);
+        background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px }
+      .toggle { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 4px 0 6px }
+      .toggle input { width: 22px; height: 22px; margin-top: 1px; flex: none; accent-color: var(--blue) }
+      .log { list-style: none; margin: 0; padding: 0; font-size: 13px; display: flex; flex-direction: column; gap: 6px }
+      .mark::after { content: ""; position: absolute; left: 9px; right: 9px; top: 9px; height: 20px; border-radius: 5px; background: rgba(5,7,12,.85); box-shadow: none }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

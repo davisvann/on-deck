@@ -1,0 +1,14 @@
+{
+  "package_id": "com.davisvann.ondeck",
+  "edition": "202601",
+  "name": "On Deck",
+  "version": "0.1.0",
+  "min_sdk_version": "0.0.16",
+  "entrypoint": "index.html",
+  "permissions": [
+    { "name": "network", "desc": "Talk to the Claude API with your own key, to your own Google Apps Script bridge for Gmail and Calendar, and to Deepgram for voice edits if you add a key.",
+      "whitelist": ["https://api.anthropic.com", "https://script.google.com", "https://script.googleusercontent.com", "wss://api.deepgram.com"] },
+    { "name": "g2-microphone", "desc": "Hear your voice edits to a draft, only while you are dictating one." }
+  ],
+  "supported_languages": ["en"]
+}
