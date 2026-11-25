@@ -1,0 +1,7 @@
+On Deck is a chief of staff for your glasses. Claude reads your Gmail and Google Calendar, picks the few things that need a decision from you, and drafts the action for each one.
+
+Your lens shows one card at a time: what needs you, why it matters, and the reply, invite answer or message Claude already wrote. Tap to send it. Swipe to skip. Swipe down and say what to change, like "tell him I'll be ten minutes late", and Claude rewrites the draft. When you're through: All clear. Head up.
+
+Nothing is sent without your tap, and every tap has a 3-second undo.
+
+Try it right away with the built-in demo inbox, no accounts needed. To use your own email and calendar, add your Claude key and connect Google from the phone screen (setup guide on GitHub). Voice edits use your own Deepgram key.
